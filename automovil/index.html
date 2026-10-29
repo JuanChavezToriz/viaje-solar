@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#030609" />
+  <meta name="description" content="Orbital: un deportivo conceptual sobre la Tierra. Explora su diseño, pintura, rines e interior en una experiencia 3D." />
+  <title>Orbital — Solar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <canvas id="orbital-canvas" tabindex="0" aria-label="Deportivo en 3D. Arrastra para girar; usa la rueda o pellizca para acercarte. Con teclado: flechas para girar, más y menos para zoom, cero para restablecer."></canvas>
+  <header class="orbital-header">
+    <a class="orbital-brand" href="%BASE_URL%" aria-label="Solar, volver al atlas"><span class="brand-solar">SOLAR <i aria-hidden="true">/</i></span> ORBITAL</a>
+    <nav aria-label="Experiencia orbital"><a href="%BASE_URL%">Atlas <span aria-hidden="true">↗</span></a><button id="orbital-replay" type="button" title="Repetir introducción" aria-label="Repetir introducción"><span aria-hidden="true">↺</span><span class="replay-label">Repetir</span></button><button id="credits-open" type="button">Créditos</button></nav>
+  </header>
+  <div class="orbital-wordmark" aria-hidden="true">ORBITAL</div>
+  <div class="orbital-loader" id="orbital-loader" role="status" aria-live="polite">
+    <div class="loading-content"><p id="loading-title">Preparando otra perspectiva.</p><div class="loading-progress"><progress id="orbital-progress" max="100" value="0" aria-label="Carga de los recursos 3D"></progress><span id="loading-percent" aria-hidden="true">0%</span></div><p id="loading-label">Iniciando el espacio</p><div id="loading-actions" hidden><a href="">Reintentar</a><a href="?renderer=webgl">Usar modo compatible</a><a href="%BASE_URL%">Volver al atlas</a></div></div>
+  </div>
+  <p id="orbital-story" class="orbital-story" aria-hidden="true">El viaje empieza<br />en silencio.</p>
+  <button id="orbital-skip" class="orbital-skip" type="button" hidden>Explorar el auto <span aria-hidden="true">→</span></button>
+  <main class="config-panel" id="orbital-config" data-tab="exterior" inert>
+    <h1>Fuera de<br />lo habitual.</h1>
+    <p class="config-description">Diseña tu propia órbita.</p>
+    <div class="config-tabs" role="group" aria-label="Opciones del automóvil"><button data-config-tab="exterior" type="button" aria-pressed="true">Exterior</button><button data-config-tab="wheels" type="button" aria-pressed="false">Rines</button><button data-config-tab="interior" type="button" aria-pressed="false">Interior</button></div>
+    <fieldset class="config-group" data-group="exterior"><legend>Exterior <span id="paint-name">Rosso</span></legend><div class="swatches" id="paint-options"></div></fieldset>
+    <fieldset class="config-group" data-group="wheels"><legend>Rines</legend><div class="finish-choices"><label><input type="radio" name="wheels" value="sport" checked /><span>Sport</span></label><label><input type="radio" name="wheels" value="racing" /><span>Racing</span></label><label><input type="radio" name="wheels" value="carbon" /><span>Carbon</span></label></div></fieldset>
+    <fieldset class="config-group" data-group="interior"><legend>Interior <span id="interior-name">Black</span></legend><div class="swatches" id="interior-options"></div></fieldset>
+    <p id="config-status" class="sr-only" aria-live="polite" role="status"></p>
+  </main>
+  <div class="orbital-controls" id="orbital-controls" inert>
+    <p class="gesture-hint"><span class="desktop-hint">Arrastra para girar · Rueda para acercar</span><span class="mobile-hint">Arrastra para girar · Pellizca para acercar</span></p>
+    <div class="control-buttons" role="group" aria-label="Control de la vista 3D"><button id="car-left" type="button" aria-label="Girar a la izquierda" title="Girar a la izquierda">↶</button><button id="car-zoom-out" type="button" aria-label="Alejar" title="Alejar">−</button><button id="car-zoom-in" type="button" aria-label="Acercar" title="Acercar">+</button><button id="car-right" type="button" aria-label="Girar a la derecha" title="Girar a la derecha">↷</button><button id="reset-car" type="button" aria-label="Restablecer vista" title="Restablecer vista">↻</button></div>
+  </div>
+  <button id="motion-toggle" class="motion-toggle" type="button" aria-pressed="false">Pausar movimiento</button>
+  <dialog id="orbital-credits" aria-labelledby="credits-title"><div class="credits-sheet"><button id="credits-close" type="button" aria-label="Cerrar créditos">×</button><h2 id="credits-title">Hecho de luz y detalle.</h2><p>Una experiencia conceptual independiente dentro de Solar. El automóvil es un diseño genérico.</p><h3>Automóvil</h3><p><a href="https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/CarConcept" target="_blank" rel="noreferrer">Car Concept — Eric Chadwick / Darmstadt Graphics Group</a>, 2024. <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">CC BY 4.0</a>. Adaptado: logotipos retirados, materiales ajustados, rines adicionales y variante de texturas de menor resolución.</p><h3>Tierra</h3><p>Mapas de día, noche y nubes de <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noreferrer">Solar System Scope / INOVE</a>, basados en datos NASA. <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">CC BY 4.0</a>. Versiones de 1K adaptadas.</p><p>Estrellas, nebulosa, iluminación HDR y animación creadas para esta experiencia. Babylon.js, Apache 2.0.</p></div></dialog>
+  <noscript><p class="no-script">Esta experiencia necesita JavaScript y gráficos 3D en el navegador. <a href="/">Volver al atlas</a>.</p></noscript>
+  <script type="module" src="/src/orbital/main.ts"></script>
+</body>
+</html>

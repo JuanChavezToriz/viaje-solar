@@ -1,0 +1,22 @@
+{
+  "name": "solar-system-atlas",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --configLoader native --host 0.0.0.0",
+    "build": "npm run typecheck:orbital && vite build --configLoader native",
+    "typecheck:orbital": "tsc -p tsconfig.orbital.json",
+    "preview": "vite preview --configLoader native --host 0.0.0.0",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@babylonjs/core": "8.56.2",
+    "@babylonjs/loaders": "8.56.2",
+    "three": "^0.180.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vite": "^7.1.5"
+  }
+}

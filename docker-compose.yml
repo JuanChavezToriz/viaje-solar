@@ -1,0 +1,7 @@
+services:
+  solar:
+    build: .
+    container_name: solar-atlas
+    ports:
+      - "4173:8080"
+    restart: unless-stopped

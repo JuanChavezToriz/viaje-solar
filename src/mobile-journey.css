@@ -1,0 +1,123 @@
+/* A quiet opening, followed by worlds that fill the handset. */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+.launch-logo .brand-mark { width: 20px; height: 20px; flex: 0 0 20px; }
+.launch-logo .brand-mark::before { width: 29px; height: 10px; }
+.launch-logo .brand-mark::after { width: 4px; height: 4px; }
+#launch-dust { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+body.is-arriving .site-header, body.is-arriving .atlas-credits { opacity: 0; visibility: hidden; pointer-events: none; }
+html.launch-pending body > :not(#scene-wrap):not(#mobile-launch):not(script) { visibility: hidden !important; }
+.launch-copy { right: 26px; }
+#planet-gesture-surface { display: none; }
+#discover { cursor: pointer; transform-origin: center; }
+#discover > span { display: flex; align-items: center; justify-content: center; gap: 36px; }
+#discover i { font-style: normal; font-size: 18px; }
+#discover:disabled { cursor: wait; }
+#discover:focus-visible { outline: 2px solid #dfbc8a; outline-offset: 5px; }
+body[data-launch='departing'] #mobile-launch,
+body[data-launch='revealing'] #mobile-launch { pointer-events: none; }
+.play-label, .options-dots, .portrait-symbol, .portrait-step,
+#enter-planets, #portrait-pager { display: none; }
+
+body.mobile-experience .simulation-ui .planet-rail { display: none; }
+body.mobile-experience .simulation-ui { width: auto; left: 0; right: 0; bottom: 0; }
+body.mobile-experience .simulation-ui .sim-options,
+body.mobile-experience.planet-selected .simulation-ui .sim-options { top: max(18px, env(safe-area-inset-top)); right: 20px; }
+body.mobile-experience .simulation-ui .sim-options > summary { min-width: 44px; width: 44px; padding: 0; border-radius: 50%; background: #11161bcc; }
+body.mobile-experience .simulation-ui .sim-options > summary::after { display: none; }
+body.mobile-experience .options-label { display: none; }
+body.mobile-experience .options-dots { display: block; width: 22px; height: 22px; fill: currentColor; }
+body.mobile-experience .sim-options-panel #toggle-play { display: flex; flex: auto; width: 100%; min-height: 44px; gap: 12px; padding-inline: 12px; border-radius: 12px; color: #e8e9ec; }
+body.mobile-experience .sim-options-panel .play-label { display: inline; font: 400 13px 'Manrope', sans-serif; }
+body.mobile-experience .sim-options-panel .pause-glyph { flex: 0 0 24px; width: 24px; height: 24px; }
+body.mobile-experience .simulation-ui .sim-options-panel { max-height: calc(100svh - 90px); }
+body.mobile-experience.planet-selected .portrait-step { display: flex; gap: 8px; }
+.portrait-step button { flex: 1; min-height: 44px; padding: 8px; border: 0; border-radius: 12px; background: #2a3037; color: #e8e9ec; cursor: pointer; font: 400 13px 'Manrope', sans-serif; }
+
+body.mobile-experience.explore-active.system-interactive:not(.planet-selected) #enter-planets { position: fixed; z-index: 12; display: flex; align-items: center; justify-content: space-between; left: 22px; right: 22px; bottom: max(22px, env(safe-area-inset-bottom)); min-height: 48px; padding: 0 22px; border: 0; border-radius: 28px; background: #ede5d8; color: #131719; font: 400 13px 'Manrope', sans-serif; cursor: pointer; }
+#enter-planets:focus-visible { outline: 2px solid #dfbc8a; outline-offset: 4px; }
+body.mobile-experience.explore-active:not(.planet-selected) .journey-progress { opacity: 0; visibility: hidden; pointer-events: none; }
+body.mobile-experience.explore-active .site-nav { visibility: hidden; pointer-events: none; }
+body.mobile-experience.explore-active .site-header { border: 0; background: transparent; }
+body.mobile-experience.explore-active:not(.planet-selected) .journey-caption { top: 84px; }
+body.mobile-experience.explore-active:not(.planet-selected) .solar-hint { display: none; }
+body.mobile-experience.explore-active:not(.planet-selected) .atlas-credits { bottom: max(84px, calc(env(safe-area-inset-bottom) + 62px)); }
+body.mobile-experience.explore-active:not(.planet-selected) .planet-label { padding: 10px 8px; border: 0; border-radius: 0; background: transparent; color: #d8dce0; font: 400 12px/1.4 'Manrope', sans-serif; letter-spacing: 0; text-shadow: none; } /* taste-skill-ignore: removes the inherited label shadow. */
+body.mobile-experience.explore-active:not(.planet-selected) .planet-label.is-hovered { background: transparent; color: #f0d8b5; }
+body.mobile-experience.explore-active:not(.planet-selected) .planet-connector line { stroke-opacity: .45; }
+body.mobile-experience .galaxy-marker-caption { min-height: 44px; padding: 10px 12px; border-radius: 12px; color: #f2dec2; font-size: 13px; }
+body.mobile-experience.planet-selected .site-header { opacity: 0; visibility: hidden; pointer-events: none; }
+body.mobile-experience.planet-selected { touch-action: pan-y pinch-zoom; }
+body.mobile-experience.portrait-visible #planet-gesture-surface { display: block; position: fixed; z-index: 4; top: 76px; left: 0; right: 0; height: calc(55svh - 76px); touch-action: none; cursor: grab; }
+body.mobile-experience.portrait-visible #planet-gesture-surface:active { cursor: grabbing; }
+body.mobile-experience.planet-selected .exploration-context { top: max(18px, env(safe-area-inset-top)); left: 20px; right: auto; }
+body.mobile-experience.planet-selected .overview-button { min-height: 44px; padding: 0 14px; border-radius: 24px; background: #11161bcc; color: #ecebe8; }
+body.mobile-experience.planet-selected .planet-panel,
+body.mobile-experience.explore-active.planet-selected .planet-panel { position: fixed; top: auto; left: 22px; right: 22px; bottom: max(77px, calc(env(safe-area-inset-bottom) + 59px)); width: auto; max-width: none; max-height: none; padding: 18px 20px 12px; margin: 0; border: 0; border-radius: 20px; background: #0b1014; overflow: visible; transform: none; }
+body.mobile-experience.planet-selected .planet-panel-main { opacity: 1; transition: none; }
+body.mobile-experience.planet-selected .planet-panel-main > div { display: flex; align-items: center; gap: 11px; }
+body.mobile-experience.planet-selected.portrait-changing .planet-panel { opacity: 0; }
+body.mobile-experience.planet-selected .planet-panel h2 { margin: 0; color: #f3f0e9; font: 400 29px/1.1 'Manrope', sans-serif; letter-spacing: -.045em; }
+body.mobile-experience.planet-selected #portrait-caption { display: none; }
+body.mobile-experience.planet-selected .planet-panel .planet-description { display: block; margin: 10px 0 0; color: #c5cbd0; font: 400 13px/1.65 'Manrope', sans-serif; }
+body.mobile-experience.planet-selected .planet-panel .planet-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 16px; margin-top: 13px; }
+body.mobile-experience.planet-selected .planet-panel .planet-facts > div { display: none; min-height: 0; padding: 0; gap: 4px; }
+body.mobile-experience.planet-selected .planet-panel .planet-facts > div:first-child,
+body.mobile-experience.planet-selected .planet-panel .planet-facts > .fact-period { display: flex; }
+body.mobile-experience.planet-selected .planet-panel .planet-facts > div span { color: #9da9b3; font: 400 10px/1.4 'Manrope', sans-serif; letter-spacing: 0; }
+body.mobile-experience.planet-selected .planet-panel .planet-facts strong { color: #eceeea; font: 500 15px/1.35 'Manrope', sans-serif; }
+body.mobile-experience.planet-selected .planet-panel .planet-facts strong small { font-size: 11px; color: #bac3ca; }
+body.mobile-experience.planet-selected .planet-panel .panel-more { min-height: 44px; margin: 5px 0 -4px; color: #e3c9a8; font-size: 12px; transform: none; }
+body.mobile-experience.planet-selected .portrait-symbol,
+body.mobile-experience.planet-selected .planet-panel.is-expanded .portrait-symbol { display: block; flex: 0 0 30px; width: 30px; height: 30px; color: #eee4d5; margin: 0; }
+.portrait-symbol svg { display: block; width: 100%; height: 100%; }
+body.mobile-experience.planet-selected .planet-panel.is-expanded { top: auto; bottom: max(77px, calc(env(safe-area-inset-bottom) + 59px)); max-height: calc(100svh - 150px); padding: 18px 20px 12px; border-radius: 20px; background: #0b1014; overflow-y: auto; overscroll-behavior: contain; }
+body.mobile-experience.planet-selected .planet-panel.is-expanded h2 { margin: 0; font-size: 29px; }
+body.mobile-experience.planet-selected .planet-panel.is-expanded .planet-facts > div { display: flex; }
+body.mobile-experience.planet-selected .planet-panel.is-expanded .panel-more { position: static; width: auto; padding: 0; background: transparent; }
+body.mobile-experience.planet-selected .planet-panel-foot { border: 0; margin-top: 8px; padding: 0; }
+body.mobile-experience.planet-selected .planet-panel-foot .source-link { letter-spacing: 0; font: 400 11px/1.4 'Manrope', sans-serif; }
+body.mobile-experience.planet-selected #portrait-pager { position: fixed; z-index: 12; display: flex; align-items: center; justify-content: center; gap: 8px; bottom: max(35px, calc(env(safe-area-inset-bottom) + 20px)); left: 0; right: 0; height: 8px; pointer-events: none; }
+#portrait-pager i { width: 4px; height: 4px; border-radius: 8px; background: #6b7077; transition: width .45s ease, background .3s; }
+#portrait-pager i.is-current { width: 21px; background: #e9d4b5; }
+body.mobile-experience.planet-selected:not(.portrait-touched):not(.portrait-loading):not(.planet-details-open) .portrait-gesture { position: fixed; z-index: 12; display: block; bottom: max(58px, calc(env(safe-area-inset-bottom) + 43px)); left: 0; right: 0; margin: 0; color: #b4bdc7; text-align: center; pointer-events: none; font: 400 10px/1.5 'Manrope', sans-serif; }
+body.mobile-experience .destination-status { bottom: max(60px, calc(env(safe-area-inset-bottom) + 45px)); font-size: 12px; }
+body.mobile-experience .help-mobile { display: block; }
+body.mobile-experience .help-desktop { display: none; }
+body.mobile-experience.is-arriving .site-header,
+body.mobile-experience.is-arriving .atlas-credits { opacity: 0; visibility: hidden; pointer-events: none; }
+body.mobile-experience .arrival-copy { left: 26px; bottom: 21vh; max-width: calc(100vw - 52px); }
+body.mobile-experience .arrival-copy .arrival-title { font-size: clamp(38px, 11vw, 54px); }
+
+@media (max-height: 640px) and (orientation: portrait) {
+  body.mobile-experience.explore-active:not(.planet-selected) .journey-caption h1 { font-size: 28px; }
+  body.mobile-experience.explore-active:not(.planet-selected) .journey-caption p { margin-top: 9px; font-size: 13px; }
+  body.mobile-experience.explore-active.planet-selected .planet-panel { bottom: 72px; left: 18px; right: 18px; padding: 14px 16px 8px; }
+  body.mobile-experience.planet-selected .planet-panel h2 { font-size: 26px; }
+  body.mobile-experience.planet-selected .planet-panel .planet-description { margin-top: 8px; line-height: 1.55; }
+  body.mobile-experience.planet-selected .planet-panel .planet-facts { margin-top: 10px; }
+  body.mobile-experience.planet-selected .planet-panel .panel-more { margin-top: 0; }
+  body.mobile-experience .launch-copy { bottom: 25vh; }
+}
+@media (orientation: landscape) {
+  body.mobile-experience.explore-active:not(.planet-selected) .journey-caption { left: 26px; max-width: min(33vw, 250px); }
+  body.mobile-experience.portrait-visible #planet-gesture-surface { top: 70px; bottom: 40px; height: auto; left: 43%; }
+  body.mobile-experience.explore-active.planet-selected .planet-panel { right: auto; width: min(43vw, 350px); left: 22px; bottom: 45px; padding: 14px 16px 8px; }
+  body.mobile-experience.planet-selected .planet-panel h2 { font-size: 26px; }
+  body.mobile-experience.planet-selected .planet-panel .planet-description { margin-top: 8px; line-height: 1.55; }
+  body.mobile-experience.planet-selected .planet-panel .planet-facts { margin-top: 10px; }
+  body.mobile-experience.planet-selected .planet-panel .panel-more { margin-top: 0; }
+  body.mobile-experience.planet-selected .planet-panel.is-expanded { left: 22px; right: auto; width: min(48vw, 380px); bottom: 40px; max-height: calc(100svh - 108px); }
+  body.mobile-experience.planet-selected #portrait-pager { bottom: 20px; }
+  body.mobile-experience.planet-selected:not(.portrait-touched):not(.portrait-loading):not(.planet-details-open) .portrait-gesture { bottom: 32px; }
+  body.mobile-experience .arrival-copy { left: 26px; bottom: 45px; max-width: min(50vw, 350px); }
+  body.mobile-experience .arrival-copy .arrival-title { font-size: clamp(26px, 4.5vw, 38px); }
+  body.mobile-experience .arrival-copy > p:last-child { font-size: 13px; line-height: 1.55; }
+  body.mobile-experience #discover { bottom: 40px; left: auto; right: 26px; width: min(210px, 35vw); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #portrait-pager i { transition: none; }
+}
+@media (min-width: 701px) and (min-height: 501px) {
+  .launch-logo { left: 4vw; top: 32px; }
+  #discover { left: 4vw; width: 240px; bottom: 6vh; }
+}

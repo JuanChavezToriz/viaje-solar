@@ -1,0 +1,285 @@
+/* The selected world is the composition; information stays behind one action. */
+:root {
+  --portrait-ink: #f4f3ef;
+  --portrait-muted: #b9bdc3;
+  --portrait-surface: #17181a;
+  --portrait-selected: #38393c;
+  --portrait-ease: cubic-bezier(.22, 1, .36, 1);
+}
+
+body.planet-selected .site-header {
+  background: transparent;
+  border: 0;
+}
+
+body.planet-selected .journey-progress,
+body.planet-selected .selection-context,
+body.planet-selected .solar-hint,
+body.planet-selected #label-layer,
+body.planet-selected .atlas-credits {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+body.planet-selected #label-layer { display: none; }
+body.planet-selected .planet-panel:not(.is-expanded) .planet-description { display: none; }
+
+body.planet-selected .site-header,
+body.planet-selected .exploration-context {
+  z-index: 8;
+  transform: translateZ(0);
+}
+
+body.planet-selected .exploration-context {
+  top: 94px;
+  left: 5vw;
+}
+
+body.planet-selected .overview-button {
+  padding: 0;
+  background: transparent;
+  color: var(--portrait-muted);
+}
+
+body.planet-selected .overview-button span { color: var(--portrait-ink); }
+body.planet-selected .overview-button:hover { color: var(--portrait-ink); }
+
+body.planet-selected .planet-panel,
+body.explore-active.planet-selected .planet-panel {
+  top: clamp(170px, 24vh, 250px);
+  right: auto;
+  bottom: auto;
+  left: 6vw;
+  width: min(330px, 30vw);
+  max-height: calc(100svh - 360px);
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none; /* taste-skill-ignore: remove inherited card shadow. */
+  backdrop-filter: none; /* taste-skill-ignore: remove inherited blur. */
+  transform: translateZ(0);
+  color: var(--portrait-ink);
+  transition: opacity .45s var(--portrait-ease), visibility .45s;
+}
+
+body.planet-selected .planet-panel .planet-panel-main { margin: 0; }
+body.planet-selected .planet-panel h2 {
+  margin: 0;
+  color: var(--portrait-ink);
+  font: 400 clamp(42px, 4.7vw, 72px)/1.06 'Manrope', sans-serif;
+  letter-spacing: -.055em;
+}
+
+#portrait-caption {
+  margin: 14px 0 0;
+  color: var(--portrait-muted);
+  font: 400 15px/1.6 'Manrope', sans-serif;
+}
+
+body.planet-selected .planet-panel .panel-close,
+body.planet-selected .planet-panel:not(.is-expanded) .planet-facts { display: none; }
+
+body.planet-selected .planet-panel .panel-more {
+  width: auto;
+  min-width: 125px;
+  gap: 22px;
+  margin: 16px 0 0;
+  padding: 0;
+  border: 0;
+  color: var(--portrait-ink);
+  font-size: 13px;
+  position: relative;
+  transform: translateZ(0);
+}
+
+body.planet-selected .dock-actions .zoom-button,
+body.planet-selected .dock-actions .pause-glyph { border: 0; background: #17181a; }
+body.planet-selected .dock-actions .zoom-button { border-radius: 50%; }
+
+body.planet-selected .planet-panel .panel-more:hover { color: #e4c9a9; }
+
+body.planet-selected .planet-panel.is-expanded {
+  width: min(355px, 32vw);
+  max-height: calc(100svh - 300px);
+  padding: 22px;
+  border-radius: 16px;
+  background: #101215;
+}
+
+body.planet-selected .planet-panel.is-expanded h2 { font-size: 36px; }
+body.planet-selected .planet-panel.is-expanded #portrait-caption { display: none; }
+body.planet-selected .planet-panel.is-expanded .planet-description { margin-top: 16px; }
+body.planet-selected .planet-facts > div { border: 0; }
+
+/* A single quiet rail, with a shared selection moving beneath the destinations. */
+.simulation-ui,
+body.explore-active .simulation-ui {
+  width: min(930px, calc(100vw - 64px));
+  bottom: max(23px, env(safe-area-inset-bottom));
+  padding: 0;
+  gap: 10px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none; /* taste-skill-ignore: remove inherited dock shadow. */
+  backdrop-filter: none; /* taste-skill-ignore: remove inherited blur. */
+}
+
+.simulation-ui .planet-rail {
+  min-height: 60px;
+  padding: 6px;
+  border: 0;
+  border-radius: 22px;
+  background: var(--portrait-surface);
+}
+
+.simulation-ui #planet-buttons {
+  position: relative;
+  width: 100%;
+  min-height: 48px;
+  gap: 0;
+  padding: 0;
+  scrollbar-width: none;
+  scroll-padding-inline: 8px;
+}
+.simulation-ui #planet-buttons::-webkit-scrollbar { display: none; }
+
+.planet-rail-indicator {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  left: 0;
+  height: 48px;
+  border-radius: 17px;
+  background: var(--portrait-selected);
+  pointer-events: none;
+  transition: transform .6s var(--portrait-ease), width .4s var(--portrait-ease);
+}
+.planet-rail-indicator[hidden] { display: none; }
+
+.simulation-ui .planet-chip {
+  position: relative;
+  z-index: 1;
+  min-width: 90px;
+  min-height: 48px;
+  flex: 1 0 auto;
+  flex-direction: row;
+  justify-content: center;
+  gap: 9px;
+  padding: 0 15px;
+  border: 0;
+  border-radius: 17px;
+  background: transparent;
+  color: var(--portrait-muted);
+  font: 400 13px/1.3 'Manrope', sans-serif;
+  letter-spacing: 0;
+  transition: color .25s, transform .3s var(--portrait-ease);
+}
+
+.simulation-ui .planet-chip:hover,
+.simulation-ui .planet-chip.is-selected { background: transparent; color: var(--portrait-ink); }
+.simulation-ui .planet-chip:hover { transform: translateY(-1px); }
+.simulation-ui .planet-chip:active { transform: scale(.95); }
+.simulation-ui .planet-chip:focus-visible { outline-offset: -3px; }
+.simulation-ui .planet-thumbnail {
+  width: 16px;
+  height: 16px;
+  flex-basis: 16px;
+  opacity: .66;
+  transition: opacity .3s, transform .45s var(--portrait-ease);
+}
+.simulation-ui .planet-chip.is-selected .planet-thumbnail { opacity: 1; transform: rotate(-12deg) scale(1.08); }
+.simulation-ui [data-planet='saturn'] .planet-thumbnail::after { top: 4px; left: -5px; width: 26px; height: 8px; }
+
+.simulation-ui .dock-actions {
+  display: flex;
+  min-height: 44px;
+  flex-wrap: nowrap;
+  justify-content: center;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.simulation-ui .timeline { flex: 0 1 auto; margin: 0; }
+.simulation-ui #sim-rate { color: var(--portrait-muted); }
+.simulation-ui .sim-options { margin: 0; }
+.simulation-ui .sim-options > summary {
+  border: 0;
+  background: transparent;
+  color: var(--portrait-muted);
+  text-transform: none;
+}
+.simulation-ui .zoom-button { background: transparent; }
+.simulation-ui .sim-options-panel { background: #171a1e; }
+
+body.planet-selected .simulation-ui .timeline,
+body.planet-selected .simulation-ui .sim-options { display: none; }
+body.planet-selected .simulation-ui .dock-actions { opacity: .65; }
+body.planet-selected .simulation-ui .dock-actions:hover,
+body.planet-selected .simulation-ui .dock-actions:focus-within { opacity: 1; }
+body.planet-selected .simulation-ui .zoom-control { gap: 12px; }
+
+@media (max-width: 1000px) {
+  .simulation-ui .planet-chip { min-width: 88px; padding-inline: 13px; }
+}
+
+@media (max-width: 700px) {
+  .simulation-ui,
+  body.explore-active .simulation-ui {
+    right: 12px;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    left: 12px;
+    width: auto;
+    padding: 0;
+    gap: 7px;
+    transform: none;
+  }
+  .simulation-ui .planet-rail { min-height: 60px; padding: 6px; }
+  .simulation-ui .planet-chip { flex: 0 0 auto; min-width: 104px; min-height: 48px; padding: 0 16px; font-size: 14px; }
+  .simulation-ui .dock-actions { display: flex; min-height: 44px; gap: 10px; padding: 0; }
+  .simulation-ui .timeline { display: none; }
+  .simulation-ui .sim-options { margin-left: auto; }
+  body.planet-selected .simulation-ui .sim-options { margin-left: 0; }
+  body.planet-selected .exploration-context { top: 76px; right: 24px; left: 24px; }
+  body.planet-selected .solar-touch-toggle { background: #17181a; border-radius: 16px; font-size: 12px; }
+  body.planet-selected .planet-panel,
+  body.explore-active.planet-selected .planet-panel {
+    top: 148px;
+    right: 24px;
+    bottom: auto;
+    left: 24px;
+    width: auto;
+    max-height: calc(100svh - 310px);
+    padding: 0;
+    background: transparent;
+  }
+  body.planet-selected .planet-panel h2 { font-size: 46px; }
+  #portrait-caption { max-width: 280px; margin-top: 8px; font-size: 14px; }
+  body.planet-selected .planet-panel .panel-more { margin-top: 6px; min-height: 44px; }
+  body.planet-selected .planet-panel.is-expanded {
+    top: 135px;
+    width: auto;
+    max-height: calc(100svh - 270px);
+    padding: 20px;
+    background: #101215;
+  }
+}
+
+@media (max-height: 600px) {
+  body.planet-selected .exploration-context { top: 70px; }
+  body.planet-selected .planet-panel,
+  body.explore-active.planet-selected .planet-panel { top: 125px; max-height: calc(100svh - 255px); }
+  body.planet-selected .planet-panel h2 { font-size: 38px; }
+  #portrait-caption { margin-top: 7px; font-size: 13px; }
+  body.planet-selected .planet-panel .panel-more { margin-top: 4px; }
+  .simulation-ui, body.explore-active .simulation-ui { bottom: 8px; gap: 4px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .planet-rail-indicator, .simulation-ui .planet-chip, .simulation-ui .planet-thumbnail { transition: none; }
+}

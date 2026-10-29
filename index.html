@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>document.documentElement.classList.add('launch-pending'); history.scrollRestoration = 'manual'; if (location.hash) history.replaceState(history.state, '', location.pathname + location.search);</script>
+    <style>
+      #mobile-launch[hidden] { display: none; }
+      html.launch-pending, html.launch-pending body { overflow: hidden; background: #030405; }
+      html.launch-pending #mobile-launch { display: grid; }
+      #mobile-launch { position: fixed; z-index: 100; inset: 0; display: none; place-items: center; color: #f4f1e9; font-family: 'Manrope', sans-serif; }
+      .launch-backdrop { position: absolute; inset: 0; background: #030405; }
+      .launch-logo { position: absolute; top: max(28px, env(safe-area-inset-top)); left: 26px; display: flex; align-items: center; gap: 12px; font-size: 11px; letter-spacing: .17em; }
+      #discover { position: absolute; bottom: max(56px, env(safe-area-inset-bottom)); left: 15%; width: 70%; height: 52px; border: 0; border-radius: 30px; background: #eee7dc; color: #161616; font: 500 14px 'Manrope', sans-serif; }
+      #launch-flare { position: absolute; width: 360px; height: 360px; left: 50%; top: 50%; transform: translate(-50%, -50%); pointer-events: none; }
+    </style>
+    <meta name="theme-color" content="#050607" />
+    <meta name="description" content="Un recorrido continuo desde la Vía Láctea hasta los ocho planetas del Sistema Solar." />
+    <title>Solar · Un viaje para mirar más allá</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="mobile-launch" role="region" aria-label="Bienvenido a Solar" hidden>
+      <div class="launch-backdrop"></div>
+      <canvas id="launch-dust" aria-hidden="true"></canvas>
+      <div class="launch-logo"><span class="brand-mark" aria-hidden="true"></span><span>SOLAR</span></div>
+      <div class="launch-copy arrival-copy"><h1 class="arrival-title">Mira más allá.</h1><p>Vamos a descubrir nuestro lugar.</p></div>
+      <button id="discover" type="button" disabled aria-busy="true"><span>Descubrir <i aria-hidden="true">→</i></span></button>
+      <canvas id="launch-flare" aria-hidden="true"></canvas>
+      <p class="sr-only" role="status">Preparando el viaje.</p>
+    </div>
+    <div id="scene-wrap" aria-hidden="true"><canvas id="universe"></canvas></div>
+    <div id="planet-gesture-surface" aria-hidden="true"></div>
+    <div class="arrival-intro" id="arrival-intro" role="region" aria-label="Llegada a la Vía Láctea" hidden>
+      <div class="arrival-copy"><p class="arrival-title">Mira más allá.</p><p>Vamos a descubrir nuestro lugar.</p></div>
+      <button id="skip-intro" type="button">Ir a la galaxia <span aria-hidden="true">→</span></button>
+    </div>
+    <div class="journey-waypoint" id="journey-waypoint"><p id="waypoint-title" role="status" aria-live="polite">Nos acercamos.</p></div>
+    <div id="label-layer" class="is-inactive" role="group" aria-label="Seleccionar un cuerpo en la escena"></div>
+    <header class="site-header">
+      <a class="brand" href="#galaxia" aria-label="Solar — volver a la galaxia"><span class="brand-mark"></span><span>SOLAR</span></a>
+      <nav class="site-nav" aria-label="Recorrido"><a href="#galaxia" data-stage="galaxy">Galaxia</a><a href="#explorar" data-stage="solar">Planetas</a></nav>
+      <a class="orbital-launch" href="%BASE_URL%automovil/">Auto orbital <span aria-hidden="true">↗</span></a>
+    </header>
+    <main>
+      <section class="journey-track" id="inicio" aria-label="Un viaje continuo desde la galaxia al sistema solar">
+        <div class="journey-anchor" id="galaxia"></div>
+        <div class="journey-anchor explore" id="explorar"></div>
+      </section>
+    </main>
+    <div class="journey-caption"><h1 id="journey-title">Entre millones de estrellas.</h1><p id="journey-description">Un pequeño punto nos espera.</p></div>
+    <div class="exploration-context" role="group" aria-label="Explorar el sistema solar">
+      <button class="overview-button" id="overview-button" type="button"><span aria-hidden="true">←</span> Destinos</button>
+      <button class="solar-touch-toggle" id="solar-touch-toggle" type="button" aria-pressed="false">Girar vista</button>
+    </div>
+    <p class="solar-hint" id="solar-hint">Elige tu próxima escala.</p>
+    <p class="destination-status" id="destination-status" role="status" aria-live="polite"></p>
+    <p class="portrait-gesture" aria-hidden="true">Gira o pellizca el planeta. Desliza la ficha para cambiar.</p>
+    <button id="enter-planets" type="button">Explorar planetas <span aria-hidden="true">→</span></button>
+    <div id="portrait-pager" role="img" aria-label="Posición del destino"></div>
+    <a class="journey-cue" href="#explorar" aria-label="Continuar hacia los planetas"><span>Continuar el viaje</span><i aria-hidden="true">↓</i></a>
+    <nav class="journey-progress" aria-label="Posición en el recorrido"><a href="#galaxia" class="is-active" aria-label="Volver a la galaxia" data-stage="galaxy"><span></span></a><i><b id="journey-progress-bar"></b></i><a href="#explorar" aria-label="Entrar al sistema solar" data-stage="solar"><span></span></a></nav>
+    <aside class="planet-panel" id="planet-panel" aria-live="polite">
+          <div class="planet-panel-main">
+            <div>
+              <span class="portrait-symbol" aria-hidden="true"></span>
+              <h2 id="planet-name">El sistema<br />Solar</h2>
+              <p id="portrait-caption"></p>
+            </div>
+          </div>
+          <p class="planet-description" id="planet-description">Ocho planetas, cada uno siguiendo su propio ritmo alrededor de una estrella común.</p>
+          <div class="planet-facts" id="planet-facts">
+            <div><span>Diámetro</span><strong id="planet-diameter">1.39 M km <small>sol</small></strong></div>
+            <div><span>Distancia al Sol</span><strong id="planet-distance">149.6 M km <small>Tierra</small></strong></div>
+            <div class="fact-period"><span id="period-label">Año en este planeta</span><strong id="planet-period">365.25 <small>días</small></strong></div>
+            <div><span id="moons-label">Lunas</span><strong id="planet-moons">—</strong></div>
+            <div class="fact-temperature"><span>Temperatura media</span><strong id="planet-temperature">—</strong></div>
+          </div>
+          <button class="panel-more" id="panel-more" type="button" aria-expanded="false" aria-controls="planet-facts planet-description planet-source">Conocer más <span aria-hidden="true">+</span></button>
+          <div class="planet-panel-foot"><a class="source-link" id="planet-source" href="https://science.nasa.gov/solar-system/planets/" target="_blank" rel="noreferrer">Fuente: NASA ↗</a></div>
+        </aside>
+    <div class="simulation-ui" role="group" aria-label="Controles del sistema solar">
+          <div class="planet-rail" role="group" aria-label="Seleccionar destino">
+            <div id="planet-buttons"></div>
+            <button class="icon-button" id="toggle-play" aria-label="Pausar movimiento" title="Pausar movimiento"><span class="pause-glyph"><i></i><i></i></span><span class="play-label">Pausar movimiento</span></button>
+          </div>
+          <div class="control-row dock-actions">
+            <details class="sim-options" id="sim-options">
+              <summary aria-label="Opciones de la vista"><span class="options-label">Opciones</span><svg class="options-dots" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.6" /><circle cx="12" cy="12" r="1.6" /><circle cx="19" cy="12" r="1.6" /></svg></summary>
+              <div class="sim-options-panel">
+                <div class="zoom-control" role="group" aria-label="Ajustar acercamiento">
+                  <span>Acercamiento</span>
+                  <button class="zoom-button" id="zoom-out" aria-label="Alejar la vista" title="Alejar">−</button>
+                  <button class="zoom-button" id="zoom-in" aria-label="Acercar la vista" title="Acercar">+</button>
+                </div>
+                <div class="portrait-turn" role="group" aria-label="Girar el planeta sin arrastrar">
+                  <button id="turn-left" type="button" aria-label="Girar planeta a la izquierda">← Girar</button>
+                  <button id="turn-right" type="button" aria-label="Girar planeta a la derecha">Girar →</button>
+                </div>
+                <div class="portrait-step" role="group" aria-label="Cambiar de destino"><button id="previous-planet" type="button">← Anterior</button><button id="next-planet" type="button">Siguiente →</button></div>
+                <div class="speed-control" role="group" aria-label="Velocidad orbital">
+                  <span class="control-caption">VELOCIDAD</span>
+                  <button class="speed-button is-active" data-speed="1" aria-pressed="true">1×</button>
+                  <button class="speed-button" data-speed="10" aria-pressed="false">10×</button>
+                  <button class="speed-button" data-speed="100" aria-pressed="false">100×</button>
+                  <button class="speed-button" data-speed="1000" aria-pressed="false">1000×</button>
+                </div>
+                <button class="toggle-control is-active" id="toggle-orbits" aria-label="Mostrar u ocultar trayectorias orbitales" aria-pressed="true"><span class="toggle-dot"></span>ÓRBITAS</button>
+                <button class="toggle-control" id="toggle-names" aria-label="Mostrar u ocultar nombres" aria-pressed="false"><span class="toggle-dot"></span>NOMBRES</button>
+                <div class="view-presets" role="group" aria-label="Ángulo de la vista"><button type="button" data-view="perspective">Perspectiva</button><button type="button" data-view="top">Desde arriba</button></div>
+                <button class="reset-control" id="reset-camera" aria-label="Restablecer vista"><span>↻</span><b>Restablecer vista</b></button>
+                <div class="timeline" aria-label="Tiempo del recorrido">
+                  <strong id="sim-rate">1 año / min</strong>
+                  <span class="timeline-status"><i aria-hidden="true"></i><span id="sim-status">En movimiento</span></span>
+                  <time id="sim-date" hidden></time><span id="sim-elapsed" hidden></span>
+                </div>
+                <p class="scale-note">Tamaños y distancias adaptados para explorar. Las posiciones son ilustrativas.</p>
+              </div>
+            </details>
+          </div>
+        </div>
+    <div class="galaxy-tools" role="group" aria-label="Explorar la galaxia">
+          <button class="galaxy-tool-button" id="galaxy-zoom-out" type="button" aria-label="Alejar galaxia" title="Alejar galaxia">−</button>
+          <button class="galaxy-tool-button" id="galaxy-zoom-in" type="button" aria-label="Acercar galaxia" title="Acercar galaxia">+</button>
+          <button class="galaxy-tool-button galaxy-reset" id="galaxy-reset" type="button" aria-label="Reiniciar vista de la galaxia" title="Reiniciar vista">↻</button>
+          <button class="galaxy-tool-button" id="replay-intro" type="button" aria-label="Repetir el comienzo del viaje" title="Repetir viaje"><span aria-hidden="true">↺</span><span class="intro-replay-text">Repetir viaje</span></button>
+          <button class="galaxy-tool-button galaxy-touch-toggle" id="galaxy-touch-toggle" type="button" aria-pressed="false" aria-label="Activar gestos para girar la galaxia">GIRAR</button>
+        </div>
+    <span class="galaxy-gesture">Arrastra para mirar alrededor</span>
+    <svg class="galaxy-marker-link" id="galaxy-marker-link" aria-hidden="true"><line /><circle class="marker-ring" r="10" /><circle class="marker-point" r="3" /></svg>
+    <a class="galaxy-marker-caption" id="galaxy-marker-caption" href="#explorar" aria-label="Nuestro destino. Continuar hacia los planetas"><span class="marker-heading">Nuestro destino <b aria-hidden="true">↗</b></span></a>
+    <details class="atlas-credits">
+      <summary aria-label="Cómo explorar y consultar las fuentes" title="Cómo explorar">?</summary>
+      <div>
+        <h2>Cómo explorar</h2>
+        <a href="%BASE_URL%automovil/">Abrir la experiencia Auto orbital ↗</a>
+        <ul class="help-desktop">
+          <li>Arrastra para girar.</li>
+          <li>Clic derecho para mover la vista.</li>
+          <li>En «Opciones» puedes acercar o girar la vista.</li>
+          <li>Selecciona el vecindario o un planeta.</li>
+          <li>Espacio: pausar. Esc: volver al sistema.</li>
+        </ul>
+        <ul class="help-mobile">
+          <li>Desliza hacia arriba para continuar el viaje.</li>
+          <li>Arrastra el planeta para girarlo y pellizca para acercarlo.</li>
+          <li>Desliza la ficha de lado para cambiar de planeta.</li>
+          <li>En «Opciones» puedes cambiar el acercamiento.</li>
+          <li>Toca un planeta para conocerlo.</li>
+          <li>«Destinos» regresa a la vista de todos los planetas.</li>
+        </ul>
+        <p>Una vista artística: tamaños y distancias adaptados para explorar.</p>
+        <p>Datos y mapas planetarios: NASA/JPL.</p>
+        <p>Retratos: texturas de Solar System Scope / INOVE, basadas en imágenes NASA. Encuadres e iluminación artísticos.</p>
+        <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noreferrer">Solar System Scope · Texturas (CC BY 4.0) ↗</a>
+        <a href="https://science.nasa.gov/solar-system/planets/" target="_blank" rel="noreferrer">NASA · Sistema Solar ↗</a>
+        <a href="https://space.jpl.nasa.gov/tmaps/" target="_blank" rel="noreferrer">Mapas planetarios ↗</a>
+      </div>
+    </details>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

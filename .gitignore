@@ -1,0 +1,16 @@
+node_modules/
+dist/
+npm-debug.log*
+tmp/
+.taste-skill/
+.agents/
+.codex/
+.aws/
+.openai/
+.env
+.env.*
+!.env.example
+*.log
+*.local
+.DS_Store
+Thumbs.db

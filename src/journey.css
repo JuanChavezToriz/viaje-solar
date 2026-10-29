@@ -1,0 +1,307 @@
+/* One viewport, one continuous camera journey. */
+html { scroll-behavior: auto; background: #03070b; }
+.orbital-launch { position:absolute; right:4vw; display:inline-flex; align-items:center; gap:10px; min-height:44px; color:#e1c8a9; font:500 12px/1.4 'Manrope',sans-serif; }
+@media(max-width:1100px) { .orbital-launch { display:none; } }
+body { background: #03070b; scrollbar-width: none; --flight: 0; }
+body::-webkit-scrollbar { display: none; }
+#scene-wrap { opacity: 1; visibility: visible; background: #03070b; }
+#universe { outline: 0; }
+main { position: relative; z-index: 1; }
+.journey-track { position: relative; height: 420svh; min-height: 0; pointer-events: none; }
+#galaxia, #explorar { position: absolute; left: 0; width: 1px; height: 1px; min-height: 0; overflow: hidden; padding: 0; margin: 0; border: 0; background: none; scroll-margin: 0; }
+#galaxia { top: 0; }
+#explorar { top: 320svh; }
+#explorar::before { display: none; }
+.site-header { height: 76px; padding: 0 4vw; border-bottom-color: rgba(215,227,242,.07); background: linear-gradient(180deg,rgba(3,7,11,.7),transparent); backdrop-filter: none; }
+.site-nav { gap: 28px; }
+.site-nav a { min-height: 44px; display: inline-flex; align-items: center; font: 500 12px/1.2 'Manrope', sans-serif; letter-spacing: .02em; opacity: .75; }
+.site-nav a.is-active { opacity: 1; color: #f4d8b7; }
+.journey-caption { position: fixed; z-index: 4; top: 108px; left: 4vw; max-width: 330px; pointer-events: none; opacity: 1; transition: opacity .25s ease; }
+.journey-caption p { margin: 14px 0 0; color: #b6c2ce; font: 400 14px/1.6 'Manrope', sans-serif; letter-spacing: 0; }
+.journey-caption h1 { margin: 0; color: #f1f1eb; font-size: clamp(27px,2.4vw,40px); font-weight: 300; line-height: 1.08; letter-spacing: -.065em; }
+body.transition-active .journey-caption { opacity: 0; }
+body.planet-selected .journey-caption { opacity: .45; }
+.journey-cue { position: fixed; z-index: 5; left: 4vw; bottom: 40px; display: flex; align-items: center; gap: 16px; color: #afbac7; font: 9px/1 var(--mono); letter-spacing: .1em; pointer-events: auto; transition: opacity .25s, visibility .25s; }
+.journey-cue i { display: grid; width: 36px; height: 36px; place-items: center; border: 1px solid rgba(230,194,147,.3); border-radius: 50%; color: #e9bd87; font-size: 17px; font-style: normal; animation: journey-nudge 2.3s ease-in-out infinite; }
+@keyframes journey-nudge { 50% { transform: translateY(4px); } }
+body:not(.galaxy-active) .journey-cue { opacity: 0; visibility: hidden; pointer-events: none; }
+.journey-progress { position: fixed; z-index: 6; right: 22px; top: 50%; display: flex; align-items: center; flex-direction: column; transform: translateY(-50%); }
+.journey-progress a { display: grid; width: 32px; height: 32px; place-items: center; }
+.journey-progress a span { width: 5px; height: 5px; border: 1px solid #657483; border-radius: 50%; transition: background .2s, box-shadow .2s; }
+.journey-progress a.is-active span { border-color: #e9bd87; background: #e9bd87; box-shadow: 0 0 12px rgba(230,181,126,.35); }
+.journey-progress > i { position: relative; display: block; width: 1px; height: 68px; overflow: hidden; background: rgba(187,204,225,.15); }
+.journey-progress b { position: absolute; width: 100%; height: 100%; transform: scaleY(0); transform-origin: top; background: #e9bd87; }
+.galaxy-tools { right: 4vw; bottom: 29px; border: 1px solid rgba(203,220,240,.13); background: rgba(5,12,18,.58); box-shadow: none; }
+.galaxy-tools #galaxy-reset span { display: none; }
+.galaxy-tools #galaxy-zoom-in, .galaxy-tools #galaxy-zoom-out { font-size: 18px; }
+.galaxy-gesture { display: none; }
+.galaxy-marker-caption { padding: 7px 10px; border: 1px solid rgba(244,199,138,.2); border-radius: 18px; background: rgba(8,14,21,.58); font-size: 9px; color: #f6cb91; backdrop-filter: blur(6px); }
+.galaxy-marker-caption i { width: 5px; height: 5px; box-shadow: 0 0 10px 3px rgba(244,210,158,.25); }
+.simulation-ui, body.explore-active .simulation-ui { width: min(900px,calc(100vw - 60px)); bottom: max(22px,env(safe-area-inset-bottom)); background: rgba(7,16,24,.96); border-color: rgba(203,220,240,.17); box-shadow: none; }
+.simulation-ui .dock-actions { min-height: 46px; }
+.simulation-ui .dock-gesture { font-size: 8px; }
+.simulation-ui .timeline { display: flex; }
+body.planet-selected .planet-panel, body.explore-active.planet-selected .planet-panel { top: 105px; right: 4vw; width: min(290px,calc(100vw - 32px)); border-color: rgba(211,225,242,.14); background: rgba(7,16,24,.87); }
+.atlas-credits { position: fixed; z-index: 7; left: 4vw; bottom: 12px; }
+.atlas-credits > summary { display: grid; width: 22px; height: 22px; place-items: center; border: 1px solid rgba(205,220,237,.2); border-radius: 50%; color: #7f91a5; cursor: pointer; font: 10px/1 var(--mono); list-style: none; }
+.atlas-credits > summary::-webkit-details-marker { display: none; }
+.atlas-credits > div { position: absolute; left: 0; bottom: 34px; width: min(330px,calc(100vw - 32px)); padding: 20px; border: 1px solid rgba(204,225,248,.16); border-radius: 12px; background: rgba(7,15,24,.97); box-shadow: 0 10px 60px #0008; }
+.atlas-credits h2 { margin: 0 0 12px; font-size: 20px; font-weight: 400; }
+.atlas-credits p { color: #a5b3c3; font-size: 12px; line-height: 1.6; }
+.atlas-credits a { display: block; margin-top: 12px; color: #e5b988; font: 10px/1.5 var(--mono); }
+@media(max-width:700px) {
+  .site-header { height: 64px; padding: 0 20px; }
+  .site-nav { display: none; }
+  .journey-caption { top: 87px; left: 22px; max-width: 230px; }
+  .journey-caption p { font-size: 8px; margin-bottom: 8px; }
+  .journey-caption h1 { font-size: 29px; }
+  .journey-progress { right: 4px; }
+  .journey-cue { left: 22px; bottom: 94px; font-size: 8px; gap: 12px; }
+  .galaxy-tools { left: auto; right: 16px; bottom: 22px; width: auto; padding: 4px; }
+  .galaxy-tools button { flex: 0 0 auto; height: 40px; min-height: 40px; }
+  .galaxy-tools #galaxy-touch-toggle { max-width: 155px; font-size: 8px; }
+  .simulation-ui, body.explore-active .simulation-ui { left: 10px; right: 10px; width: auto; bottom: 12px; }
+  .simulation-ui .dock-actions { min-height: 44px; }
+  body.planet-selected .planet-panel, body.explore-active.planet-selected .planet-panel { top: 76px; right: 10px; left: 10px; width: auto; max-height: calc(100svh - 245px); }
+  body.planet-selected .journey-caption { opacity: 0; }
+  .atlas-credits { left: 16px; bottom: 28px; }
+  body.explore-active .atlas-credits { bottom: 122px; }
+}
+@media(prefers-reduced-motion:reduce) { .journey-cue i { animation: none; } }
+
+body:not(.explore-active) .simulation-ui { opacity: 0; visibility: hidden; pointer-events: none; }
+body.explore-active .simulation-ui { opacity: 1; visibility: visible; pointer-events: auto; }
+
+/* Keep location and interaction visible; reveal explanations when requested. */
+body.planet-selected .journey-caption { opacity: 0; visibility: hidden; }
+.galaxy-gesture {
+  display: block; position: fixed; left: auto; right: 4vw; bottom: 91px;
+  max-width: 230px; color: #9eafbf; font-size: 8px; text-align: right;
+}
+.galaxy-gesture[hidden] { display: none; }
+body.galaxy-touch-locked .journey-cue { opacity: 0; visibility: hidden; pointer-events: none; }
+.galaxy-marker-caption {
+  position: fixed; right: auto; z-index: 5; max-width: calc(100vw - 24px);
+  white-space: nowrap; pointer-events: auto; cursor: pointer; text-decoration: none;
+  transition: border-color .2s, background .2s;
+}
+.galaxy-marker-caption:hover { border-color: rgba(244,199,138,.7); background: rgba(22,28,35,.9); }
+.galaxy-marker-caption:focus-visible { outline: 2px solid #edc096; outline-offset: 4px; }
+.simulation-ui #toggle-play { min-width: 40px; width: 40px; min-height: 40px; padding: 0; }
+.simulation-ui .icon-button.is-paused .pause-glyph::after { left: 14px; }
+.atlas-credits > summary { width: 28px; height: 28px; }
+.atlas-credits > summary:focus-visible { outline: 2px solid #edc096; outline-offset: 3px; }
+.atlas-credits > div { max-height: min(520px,calc(100svh - 110px)); overflow-y: auto; }
+.atlas-credits h2 { font-size: 18px; }
+.atlas-credits ul { padding-left: 16px; margin: 0 0 16px; color: #c2ceda; font-size: 12px; line-height: 1.6; }
+.atlas-credits li + li { margin-top: 5px; }
+.help-mobile { display: none; }
+@media(max-width:700px) {
+  .site-header { gap: 16px; }
+  .site-nav { position: static; display: flex; gap: 12px; margin-left: auto; transform: none; }
+  .site-nav a { font-size: 10px; letter-spacing: 0; white-space: nowrap; }
+  .galaxy-gesture { right: 20px; bottom: 83px; max-width: 210px; }
+  .atlas-credits > summary { width: 32px; height: 32px; }
+  .help-desktop { display: none; }
+  .help-mobile { display: block; }
+}
+
+/* Exploration actions stay in the same place throughout a planet visit. */
+:root { --dock-height: 134px; --explore-accent: #f0c795; --explore-surface: #0d1922; }
+.exploration-context {
+  position: fixed; z-index: 5; top: 224px; left: 4vw;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 10px;
+  opacity: 0; visibility: hidden; pointer-events: none;
+}
+body.explore-active .exploration-context { opacity: 1; visibility: visible; pointer-events: auto; }
+body.planet-selected .exploration-context { top: 108px; }
+.overview-button, #toggle-follow, .solar-touch-toggle {
+  display: inline-flex; min-height: 44px; align-items: center; gap: 10px;
+  padding: 0 14px; border: 0; border-radius: 6px; background: var(--explore-surface);
+  color: #f0eee8; cursor: pointer; font: 500 13px/1.3 'Manrope', sans-serif;
+  transition: background .18s ease, color .18s ease;
+}
+.overview-button > span { color: var(--explore-accent); font-size: 18px; }
+.overview-button:hover, #toggle-follow:hover, .solar-touch-toggle:hover { background: #21303a; }
+.selection-context { display: flex; align-items: center; gap: 12px; }
+.selection-context[hidden] { display: none; }
+#selection-status { max-width: 190px; color: #dfc6a8; font-size: 13px; line-height: 1.5; }
+#toggle-follow { padding: 0 10px; color: #c4d0da; font-size: 12px; }
+.solar-touch-toggle { display: none; }
+.solar-hint {
+  position: fixed; z-index: 4; left: 50%; bottom: calc(var(--dock-height) + 38px);
+  width: max-content; max-width: calc(100vw - 40px); margin: 0; transform: translateX(-50%);
+  color: #b6c2ce; font: 400 12px/1.5 'Manrope', sans-serif; text-align: center;
+  opacity: 0; visibility: hidden; pointer-events: none;
+}
+body.explore-active .solar-hint { opacity: 1; visibility: visible; }
+
+/* The marker's line terminates at the actual projected position of the Sun. */
+.galaxy-marker-link { position: fixed; z-index: 4; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0; }
+.galaxy-marker-link line { stroke: #edc693; stroke-opacity: .6; stroke-width: 1; }
+.galaxy-marker-link .marker-ring { fill: none; stroke: #edc693; stroke-opacity: .7; stroke-width: 1; }
+.galaxy-marker-link .marker-point { fill: #ffe2b7; }
+.galaxy-marker-caption {
+  display: flex; min-height: 58px; flex-direction: column; justify-content: center; gap: 5px;
+  padding: 11px 14px; border: 0; border-radius: 6px; background: rgba(11,22,30,.96);
+  color: #f2d2a9; font: 500 13px/1.4 'Manrope', sans-serif; letter-spacing: 0;
+  white-space: normal; backdrop-filter: none; opacity: 0;
+}
+.marker-heading { display: flex; align-items: center; gap: 6px; }
+.marker-heading b { margin-left: 10px; font-size: 17px; font-weight: 400; }
+.marker-action { color: #bcc9d3; font-size: 11px; }
+.galaxy-marker-caption:hover, .galaxy-marker-caption:focus-visible { background: #21313a; }
+.galaxy-marker-caption:hover .marker-action, .galaxy-marker-caption:focus-visible .marker-action { color: #fff1db; }
+.galaxy-tools button { min-width: 44px; min-height: 44px; }
+.galaxy-gesture { font: 400 11px/1.5 'Manrope', sans-serif; bottom: 98px; }
+.journey-cue { min-height: 44px; font: 500 12px/1.3 'Manrope', sans-serif; letter-spacing: 0; }
+.journey-cue i { width: 44px; height: 44px; }
+.atlas-credits > summary { width: 44px; height: 44px; color: #b6c2ce; }
+
+/* Readable destinations with small, local-texture previews. */
+.simulation-ui .planet-rail { min-height: 64px; padding: 4px 0 7px; }
+.simulation-ui #planet-buttons { gap: 4px; scroll-padding-inline: 6px; }
+.simulation-ui .planet-chip {
+  display: inline-flex; min-height: 52px; flex: 1 0 auto; flex-direction: column;
+  align-items: center; justify-content: center; gap: 6px; padding: 7px 11px;
+  border: 0; border-radius: 6px; background: transparent; color: #c2cdd6;
+  font: 500 12px/1.2 'Manrope', sans-serif; letter-spacing: 0;
+}
+.simulation-ui .planet-chip:hover { background: #192733; color: #fff1db; }
+.simulation-ui .planet-chip.is-selected { background: #2c2b27; color: #ffe1b4; }
+.planet-thumbnail {
+  position: relative; display: block; width: 20px; height: 20px; flex: 0 0 20px;
+  border-radius: 50%; background-color: var(--planet-color); background-size: auto 100%; background-position: 40% center;
+  box-shadow: inset -6px -2px 6px rgba(0,0,0,.68);
+}
+[data-planet="sun"] .planet-thumbnail { box-shadow: inset -3px -2px 5px #de862d; }
+[data-planet="saturn"] .planet-thumbnail::after {
+  content: ''; position: absolute; top: 5px; left: -6px; width: 32px; height: 10px;
+  border: 2px solid #d6bf91; border-radius: 50%; transform: rotate(-25deg);
+}
+.simulation-ui .dock-actions { min-height: 54px; gap: 12px; padding: 6px 0 0; }
+.simulation-ui #toggle-play, .simulation-ui .zoom-button { min-width: 44px; width: 44px; height: 44px; min-height: 44px; }
+.simulation-ui .timeline { display: flex; align-items: center; gap: 16px; margin: 0 auto; font-family: 'Manrope', sans-serif; }
+#sim-rate { color: #f2d2a9; font-size: 13px; font-weight: 500; }
+.simulation-ui .timeline-status { display: inline-flex; gap: 6px; margin: 0; color: #c2cdd6; font-size: 12px; }
+.timeline-status i { animation: none; background: #dfbf91; }
+.timeline-status.is-paused i { background: #9babb7; }
+.sim-options { margin-left: 0; }
+.sim-options > summary { min-height: 44px; font: 500 12px/1.2 'Manrope', sans-serif; letter-spacing: 0; }
+.sim-options-panel .speed-button, .sim-options-panel .toggle-control, .sim-options-panel .reset-control { min-height: 44px; height: auto; font: 500 12px/1.3 'Manrope', sans-serif; letter-spacing: 0; }
+.view-presets { display: flex; gap: 6px; }
+.view-presets button { flex: 1; min-height: 44px; border: 0; border-radius: 6px; background: #172630; color: #dae3e9; cursor: pointer; font-size: 12px; }
+.scale-note { margin: 2px 0 0; color: #b7c4ce; font: 400 12px/1.6 'Manrope', sans-serif; }
+.sim-options-panel { background: #0d1922; backdrop-filter: none; }
+.planet-label { min-height: 44px; padding: 12px; font: 500 12px/1.4 'Manrope', sans-serif; letter-spacing: 0; box-shadow: none; }
+.planet-label.is-hovered, .planet-label.is-selected { box-shadow: none; }
+.body-focus-ring { position: absolute; top: 0; left: 0; border: 1px solid rgba(244,204,150,.8); border-radius: 50%; pointer-events: none; }
+.body-focus-ring.is-selected { border-color: rgba(244,204,150,.32); }
+.body-focus-ring[hidden] { display: none; }
+
+/* Planet information is a compact card on desktop and a bottom sheet on phones. */
+body.planet-selected .planet-panel, body.explore-active.planet-selected .planet-panel {
+  width: min(310px,28vw); max-height: calc(100svh - var(--dock-height) - 165px);
+  padding: 18px 20px 10px; background: #0b1720; pointer-events: auto; user-select: text;
+}
+.planet-panel h2 { margin: 0; font: 400 clamp(28px,2.6vw,36px)/1.1 'Manrope', sans-serif; letter-spacing: -.04em; }
+.planet-panel .panel-close.is-visible { flex-basis: 44px; width: 44px; height: 44px; }
+.planet-panel .planet-facts { gap: 12px 16px; }
+.planet-panel .planet-facts > div { min-height: 58px; padding-top: 10px; }
+.planet-panel .planet-facts > div span { color: #b7c4ce; font: 500 11px/1.4 'Manrope', sans-serif; letter-spacing: .02em; }
+.planet-panel .planet-facts strong { font: 500 17px/1.4 'Manrope', sans-serif; }
+.planet-panel .planet-facts strong small { font-size: 12px; }
+.planet-panel .panel-more { min-height: 44px; color: #f1c995; font: 500 13px/1.4 'Manrope', sans-serif; letter-spacing: 0; pointer-events: auto; }
+.planet-panel.is-expanded .planet-description { color: #d3dce3; font: 400 14px/1.65 'Manrope', sans-serif; }
+.planet-panel.is-expanded .planet-panel-foot .source-link { min-height: 44px; font-size: 12px; }
+button:focus-visible, summary:focus-visible, .site-nav a:focus-visible, .journey-progress a:focus-visible { outline: 2px solid #edc096; outline-offset: 3px; }
+button:active { filter: brightness(1.16); }
+
+@media (max-width: 700px) {
+  .site-header { padding-inline: 18px; }
+  .site-nav { gap: 10px; }
+  .journey-caption { max-width: 260px; }
+  .journey-caption p { margin-top: 10px; font-size: 13px; }
+  .exploration-context { top: 220px; left: 20px; right: 20px; flex-direction: row; flex-wrap: wrap; gap: 6px; }
+  body.planet-selected .exploration-context { top: 76px; }
+  .overview-button { padding-inline: 12px; font-size: 12px; }
+  .solar-touch-toggle { display: inline-flex; margin-left: auto; padding-inline: 10px; font-size: 12px; }
+  .selection-context { order: 3; flex-basis: 100%; justify-content: space-between; gap: 8px; }
+  #selection-status { font-size: 12px; }
+  #toggle-follow { min-height: 36px; font-size: 11px; }
+  .solar-hint { bottom: calc(var(--dock-height) + 24px); max-width: calc(100vw - 36px); width: 100%; font-size: 11px; }
+  body.planet-selected .solar-hint { display: none; }
+  .simulation-ui, body.explore-active .simulation-ui { bottom: max(10px,env(safe-area-inset-bottom)); padding: 5px 8px 6px; border-radius: 10px; }
+  .simulation-ui .planet-rail { min-height: 62px; padding-bottom: 5px; }
+  .simulation-ui .planet-chip { flex: 0 0 73px; min-height: 54px; padding: 7px 9px; font-size: 12px; }
+  .simulation-ui .dock-actions { display: grid; grid-template-columns: 44px 1fr auto; gap: 4px 8px; padding-top: 6px; }
+  .dock-actions .zoom-control { gap: 4px; }
+  .simulation-ui .timeline { grid-column: 1 / -1; grid-row: 2; min-height: 25px; justify-content: space-between; gap: 8px; margin: 0; padding: 3px 4px 0; overflow: visible; }
+  #sim-rate { font-size: 12px; }
+  .simulation-ui .timeline-status { font-size: 11px; }
+  .sim-options { grid-column: 3; grid-row: 1; }
+  .sim-options > summary { padding-inline: 10px; font-size: 11px; }
+  .sim-options-panel { max-height: calc(100svh - var(--dock-height) - 105px); }
+  body.planet-selected .planet-panel, body.explore-active.planet-selected .planet-panel {
+    top: auto; right: 10px; left: 10px; bottom: calc(var(--dock-height) + max(10px,env(safe-area-inset-bottom)) + 12px);
+    width: auto; max-height: 44svh; padding: 12px 16px 6px; border-radius: 12px;
+  }
+  .planet-panel .planet-panel-main { margin-bottom: 5px; }
+  .planet-panel h2 { font-size: 28px; }
+  .planet-panel .planet-facts { gap: 8px 16px; }
+  .planet-panel .planet-facts > div { min-height: 49px; padding-top: 7px; }
+  .planet-panel .planet-facts strong { font-size: 16px; }
+  .planet-panel .planet-facts > div span { font-size: 10px; }
+  .planet-panel.is-expanded .planet-description { font-size: 14px; }
+  .planet-panel .panel-more { margin-top: 4px; }
+  body.explore-active .atlas-credits { bottom: calc(var(--dock-height) + 24px); }
+  body.explore-active.planet-selected .atlas-credits { display: none; }
+  .galaxy-marker-caption { max-width: calc(100vw - 32px); font-size: 12px; padding: 10px 12px; }
+  .marker-heading { gap: 4px; }
+  .galaxy-gesture { bottom: 88px; font-size: 10px; }
+}
+@media (max-height: 560px) and (min-width: 701px) {
+  .journey-caption { top: 84px; }
+  .journey-caption h1 { font-size: 28px; }
+  .journey-caption p, .solar-hint { display: none; }
+  .exploration-context { top: 160px; }
+  body.planet-selected .exploration-context { top: 84px; }
+  body.planet-selected .planet-panel, body.explore-active.planet-selected .planet-panel { top: 84px; max-height: calc(100svh - var(--dock-height) - 120px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}
+
+/* Arrival is a camera approach; the interface gives way to the stellar volume. */
+.arrival-intro { position: fixed; z-index: 8; inset: 0; pointer-events: none; }
+.arrival-intro[hidden] { display: none; }
+.arrival-copy { position: absolute; left: 4vw; bottom: 24vh; max-width: 460px; opacity: var(--arrival-copy-opacity,1); }
+.arrival-copy .arrival-title { margin: 0 0 20px; color: #f1f1eb; font: 300 clamp(38px,4.5vw,68px)/1.03 'Manrope',sans-serif; letter-spacing: -.06em; }
+.arrival-copy > p:last-child { max-width: 260px; margin: 0; color: #bdcbd7; font: 400 15px/1.7 'Manrope',sans-serif; }
+#skip-intro { position: absolute; right: 4vw; bottom: 38px; display: inline-flex; min-height: 46px; align-items: center; gap: 22px; padding: 0 16px; border: 0; border-radius: 6px; background: #0d1922; color: #e8dac6; cursor: pointer; pointer-events: auto; font: 500 13px/1.3 'Manrope',sans-serif; }
+#skip-intro span { color: #f0c795; font-size: 20px; }
+#skip-intro:hover { background: #21313c; }
+body.is-arriving .journey-caption,
+body.is-arriving .journey-cue,
+body.is-arriving .journey-progress,
+body.is-arriving .galaxy-tools,
+body.is-arriving .galaxy-gesture,
+body.is-arriving .galaxy-marker-caption,
+body.is-arriving .galaxy-marker-link { opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
+.galaxy-tools #replay-intro { gap: 7px; font: 500 12px/1.3 'Manrope',sans-serif; }
+.galaxy-tools #replay-intro > span:first-child { font-size: 18px; }
+.journey-waypoint { position: fixed; z-index: 5; left: 50%; bottom: 52px; width: min(400px,calc(100vw - 40px)); transform: translateX(-50%); text-align: center; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .3s ease,visibility .3s ease; }
+body.transition-active .journey-waypoint { opacity: 1; visibility: visible; }
+.journey-waypoint p { margin: 0 0 9px; color: #ece7dd; font: 400 20px/1.4 'Manrope',sans-serif; letter-spacing: -.025em; }
+.journey-waypoint > span { color: #bdcad5; font: 400 12px/1.5 'Manrope',sans-serif; }
+.journey-waypoint i { padding: 0 10px; color: #e9c895; font-style: normal; }
+@media(max-width:700px) {
+  .arrival-copy { left: 24px; bottom: 24vh; max-width: calc(100vw - 48px); }
+  .arrival-copy .arrival-title { font-size: clamp(38px,11vw,54px); }
+  .arrival-copy > p:last-child { font-size: 14px; max-width: 220px; }
+  #skip-intro { right: 20px; bottom: max(26px,env(safe-area-inset-bottom)); }
+  .galaxy-tools .intro-replay-text { display: none; }
+  .galaxy-tools #replay-intro { min-width: 44px; padding-inline: 10px; }
+  .journey-waypoint { bottom: 36px; }
+  .journey-waypoint p { font-size: 18px; }
+}
